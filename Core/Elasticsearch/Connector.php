@@ -1,12 +1,13 @@
 <?php
 
-namespace Neelkanthk\EsLoader\Core;
+namespace Neelkanthk\EsLoader\Core\Elasticsearch;
 
 use Exception;
 use Elasticsearch;
-use Neelkanthk\EsLoader\Core\ElasticsearchAws;
+use Neelkanthk\EsLoader\Core\Elasticsearch\Aws;
 use Aws\Credentials\CredentialProvider;
 use Aws\Credentials\Credentials;
+use Neelkanthk\EsLoader\Core\Helper;
 
 class Connector
 {
@@ -30,7 +31,7 @@ class Connector
 
     public static function connection()
     {
-        $connection = config("connection");
+        $connection = Helper::config("connection");
         switch ($connection) {
             case 'local':
                 return self::local();
@@ -47,7 +48,7 @@ class Connector
      */
     private static function local()
     {
-        $config = config('local');
+        $config = Helper::config('local');
         $result = false;
         try {
             $client = Elasticsearch\ClientBuilder::create()// Instantiate a new ClientBuilder
@@ -70,13 +71,13 @@ class Connector
     {
         try {
 //AWS
-            $config = config('aws');
+            $config = Helper::config('aws');
 
             $provider = CredentialProvider::fromCredentials(
                             new Credentials($config['access_key'], $config['secret_key'])
             );
 // Create a handler (with the region of your Amazon Elasticsearch Service domain)
-            $handler = new ElasticsearchAws($config['region'], $provider);
+            $handler = new Aws($config['region'], $provider);
 // Use this handler to create an Elasticsearch-PHP client
             $client = Elasticsearch\ClientBuilder::create()
                     ->setHandler($handler)

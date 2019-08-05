@@ -2,7 +2,8 @@
 
 namespace Neelkanthk\EsLoader\Core;
 
-use Neelkanthk\EsLoader\Core\Connector;
+use Neelkanthk\EsLoader\Core\Elasticsearch\Connector;
+use Neelkanthk\EsLoader\Core\Helper;
 
 abstract class AbstractLoader
 {
@@ -11,14 +12,14 @@ abstract class AbstractLoader
     {
         $this->elasticsearch = Connector::connection();
         $params = [
-            'index' => config("index"),
+            'index' => Helper::config("index"),
             'body' => [
-                'settings' => config("settings"),
-                'mappings' => config("mappings")
+                'settings' => Helper::config("settings"),
+                'mappings' => Helper::config("mappings")
             ]
         ];
         // Create the index if not exist
-        if (!$this->elasticsearch->indices()->exists(['index' => config("index")])) {
+        if (!$this->elasticsearch->indices()->exists(['index' => Helper::config("index")])) {
             $this->elasticsearch->indices()->create($params);
         }
     }

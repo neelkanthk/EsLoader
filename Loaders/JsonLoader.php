@@ -4,10 +4,11 @@ namespace Neelkanthk\EsLoader\Loaders;
 
 use Neelkanthk\EsLoader\Core\AbstractLoader;
 use Neelkanthk\EsLoader\Interfaces\LoaderInterface;
-use Neelkanthk\EsLoader\Core\JsonListener;
+use Neelkanthk\EsLoader\Loaders\JsonListener;
 use JsonStreamingParser\Parser as JsonParser;
+use Neelkanthk\EsLoader\Core\Helper;
 
-class JsonLoader extends AbstractLoader implements LoaderInterface
+class JsonLoader extends AbstractLoader
 {
 
     protected $json;
@@ -15,14 +16,9 @@ class JsonLoader extends AbstractLoader implements LoaderInterface
 
     public function __construct(string $filePath)
     {
-        parent::__construct();
         $this->json = fopen($filePath, 'rb');
         $this->listener = new JsonListener();
-    }
-
-    public function iterate(int $offset)
-    {
-        
+        parent::__construct();
     }
 
     public function index()
@@ -34,7 +30,7 @@ class JsonLoader extends AbstractLoader implements LoaderInterface
             foreach ($records as $record) {
                 $params['body'][] = [
                     'index' => [
-                        '_index' => config("index"),
+                        '_index' => Helper::config("index"),
                         '_type' => 'doc',
                         '_id' => $record["id"]
                     ]

@@ -1,6 +1,6 @@
 <?php
 
-namespace Neelkanthk\EsLoader\Core;
+namespace Neelkanthk\EsLoader\Core\Elasticsearch;
 
 use Aws\Credentials\CredentialProvider;
 use Aws\Signature\SignatureV4;
@@ -9,7 +9,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 
-class ElasticsearchAws
+class Aws
 {
 
     private $signer;

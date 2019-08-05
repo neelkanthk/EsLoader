@@ -1,6 +1,6 @@
 <?php
 
-namespace Neelkanthk\EsLoader\Core;
+namespace Neelkanthk\EsLoader\Loaders;
 
 use JsonStreamingParser\Listener\ListenerInterface;
 
