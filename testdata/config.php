@@ -2,6 +2,7 @@
 
 return [
     "index" => "esloader",
+    "doc_id_key" => NULL,
     "connection" => "local",
     "local" => [
         'host' => "localhost",
@@ -14,7 +15,7 @@ return [
         'secret_key' => ""
     ],
     "mappings" => [
-        "doc" => [
+        "_doc" => [
             '_source' => [
                 'enabled' => true
             ],

@@ -29,16 +29,16 @@ class Connector
         return $this;
     }
 
-    public static function connection()
+    public static function connection($config)
     {
-        $connection = Helper::config("connection");
+        $connection = $config["connection"];
         switch ($connection) {
             case 'local':
-                return self::local();
+                return self::local($config);
             case 'aws':
-                return self::aws();
+                return self::aws($config);
             default:
-                return self::local();
+                return self::local($config);
         }
     }
 
@@ -46,9 +46,9 @@ class Connector
      * Self Hosted ES
      * @return boolean
      */
-    private static function local()
+    private static function local($config)
     {
-        $config = Helper::config('local');
+        $config = $config['local'];
         $result = false;
         try {
             $client = Elasticsearch\ClientBuilder::create()// Instantiate a new ClientBuilder
@@ -67,11 +67,11 @@ class Connector
      * AWS Hosted ES
      * @return boolean
      */
-    private static function aws()
+    private static function aws($config)
     {
         try {
 //AWS
-            $config = Helper::config('aws');
+            $config = $config['aws'];
 
             $provider = CredentialProvider::fromCredentials(
                             new Credentials($config['access_key'], $config['secret_key'])

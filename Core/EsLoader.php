@@ -10,35 +10,27 @@ use Neelkanthk\EsLoader\Core\Helper;
 class EsLoader
 {
 
-    public $loader;
-
-    public function __construct()
-    {
-        /**
-         * If your CSV document was created or is read on a Macintosh computer,
-         * add the following lines before using the library to help PHP detect line ending in Mac OS X
-         */
-        if (!ini_get("auto_detect_line_endings")) {
-            ini_set("auto_detect_line_endings", '1');
-        }
-    }
-
-    public function load($filePath)
+    /**
+     * Select the Loader based on the file extension
+     * @param type $filePath
+     */
+    public static function load(string $filePath, array $esConfig)
     {
         $extension = Helper::getFileExtension($filePath);
+        $loader = NULL;
         switch ($extension) {
             case "json" :
-                $this->loader = new JsonLoader($filePath);
-                $this->loader->index();
+                $loader = new JsonLoader($filePath, $esConfig);
                 break;
             case "csv" :
-                $this->loader = new CsvLoader($filePath);
-                $this->loader->index();
+                $loader = new CsvLoader($filePath, $esConfig);
                 break;
             case "xml" :
-                $this->loader = new XmlLoader($filePath);
-                $this->loader->index();
+                $loader = new XmlLoader($filePath, $esConfig);
                 break;
+        }
+        if (!is_null($loader)) {
+            $loader->index();
         }
     }
 

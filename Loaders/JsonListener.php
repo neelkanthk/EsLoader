@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * This Listener is a part of implementation of salsify/json-streaming-parser
+ */
+
 namespace Neelkanthk\EsLoader\Loaders;
 
 use JsonStreamingParser\Listener\ListenerInterface;
