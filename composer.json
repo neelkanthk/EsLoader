@@ -3,7 +3,7 @@
     "description": "A lighweight PHP package for indexing data into Elasticsearch index.",
     "type": "package",
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev-master",
     "authors": [
         {
             "name": "Neelkanth Kaushik",
