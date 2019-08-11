@@ -5,12 +5,9 @@ EsLoader is a lighweight PHP package for indexing data from multiple sources int
 
 **Table of Contents**
 
-[TOCM]
-
-[TOC]
-
 ### Features
 
+- Simple and Easy 3 step integration. 
 - Supports CSV, XML and JSON files. 
 - Support for MongoDb and MySQL coming soon in next release.
 - Indexes data quickly by leveraging the bulk indexing feature of Elasticsearch.
