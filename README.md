@@ -37,7 +37,7 @@ $config = include_once __DIR__ . '/config.php';
 EsLoader::load($filePath, $config);
 ```
 
-###Configuration
+### Configuration
 
 ```php
 <?php
@@ -91,7 +91,7 @@ return [
 
 ```
 
-###Demo
+### Demo
 
 The demo code is placed inside the **testdata** directory. The testdata contains sample csv, json and xml files having 1000 records each.
 
