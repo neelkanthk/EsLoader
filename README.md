@@ -2,6 +2,7 @@
 
 EsLoader is a lighweight PHP package for indexing data from multiple sources into Elasticsearch index.
 
+
 **Table of Contents**
 
 [TOCM]
@@ -14,27 +15,64 @@ EsLoader is a lighweight PHP package for indexing data from multiple sources int
 - Support for MongoDb and MySQL coming soon in next release.
 - Indexes data quickly by leveraging the bulk indexing feature of Elasticsearch.
 - Supports integration of AWS Elasticsearch Service.
-- Fully configurable - Define your own custom mapping and settings and even set the size of each batch request.
+- Fully configurable - Define your own index name, custom mapping and settings and even set the size of each batch request.
+
+**NOTE 1: This package is developed and tested on PHP 7.x and Elasticsearch 6.x.**
+
+**NOTE 2: This package uses `_doc` for the  `_type` meta field of Elasticsearch document.  This setting is not configurable. To know more read : [Removal of mapping types.](https://www.elastic.co/guide/en/elasticsearch/reference/6.7/removal-of-types.html "Removal of mapping types.")**  
 
 ### Installation
-
-**NOTE: This package is developed and tested on PHP 7.x and Elasticsearch 6.x.**
 
 `$ composer require neelkanthk/esloader`
 
 ### Usage
 
 ```php
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Neelkanthk\EsLoader\Core\EsLoader;
 
- //1. Specify the path of file to be indexed.
-$filePath = __DIR__ . "/data.xml"; 
+//1. Specify the path of file to be indexed.
+$filePath = __DIR__ . "/data.csv";
 //2. Load array of configurations.
-$config = include_once __DIR__ . '/config.php'; 
+$config = [
+    "index" => "esloader",
+    "doc_id_key" => NULL,
+    "connection" => "local",
+    "local" => [
+        'host' => "localhost",
+        'port' => "9200"
+    ],
+    "aws" => [
+        'host' => "",
+        'region' => "",
+        'access_key' => "",
+        'secret_key' => ""
+    ],
+    "mappings" => [
+        "_doc" => [
+            '_source' => [
+                'enabled' => true
+            ],
+            "properties" => [
+                "id" => ['type' => 'keyword'],
+                "first_name" => ['type' => 'text'],
+                "last_name" => ['type' => 'text'],
+                "email" => ['type' => 'keyword'],
+                "gender" => ['type' => 'keyword'],
+                "points" => ['type' => 'integer']
+            ]
+        ],
+    ],
+    "settings" => [
+        'number_of_shards' => 2,
+        'number_of_replicas' => 0
+    ],
+    "batch_size" => 100
+];
 //3. Pass the file and configuration to the `EsLoader::load` method.
 EsLoader::load($filePath, $config);
+
 ```
 
 ### Configuration
