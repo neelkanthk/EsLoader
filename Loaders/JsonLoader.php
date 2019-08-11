@@ -5,7 +5,6 @@ namespace Neelkanthk\EsLoader\Loaders;
 use Neelkanthk\EsLoader\Core\AbstractLoader;
 use Neelkanthk\EsLoader\Loaders\JsonListener;
 use JsonStreamingParser\Parser as JsonParser;
-use Neelkanthk\EsLoader\Core\Helper;
 use Exception;
 
 class JsonLoader extends AbstractLoader
@@ -27,40 +26,25 @@ class JsonLoader extends AbstractLoader
     public function index()
     {
         try {
+            $batchSize = $this->config['batch_size'];
             $parser = new JsonParser($this->json, $this->listener);
             $parser->parse();
             $records = $this->listener->getJson();
+            $params = ['body' => []];
+            $iteration = 1;
             if (count($records) > 0) {
-                $iteration = 1;
                 foreach ($records as $record) {
-                    if (!is_null($this->config["doc_id_key"])) {
-                        $params['body'][] = [
-                            'index' => [
-                                '_index' => $this->config["index"],
-                                '_type' => '_doc',
-                                '_id' => $record["id"]
-                            ]
-                        ];
-                    } else {
-                        $params['body'][] = [
-                            'index' => [
-                                '_index' => $this->config["index"],
-                                '_type' => '_doc'
-                            ]
-                        ];
-                    }
-
-                    $params['body'][] = $record;
-                    // Every 100 elements stop and send the bulk request
-                    if ($iteration % 100 == 0) {
-                        $this->bulkLoad($params);
+                    $this->prepareBulkIndexRequest($params, $record, $this->config);
+                    // Every $batchSize elements stop and send the bulk request
+                    if ($iteration % $batchSize == 0) {
+                        $this->bulkIndex($params);
                         $params = ['body' => []];
                     }
                     $iteration++;
                 }
                 // Send the last batch if it exists
                 if (!empty($params['body'])) {
-                    $this->bulkLoad($params);
+                    $this->bulkIndex($params);
                 }
             }
         } catch (Exception $ex) {

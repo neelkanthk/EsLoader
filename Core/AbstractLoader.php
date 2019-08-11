@@ -3,7 +3,6 @@
 namespace Neelkanthk\EsLoader\Core;
 
 use Neelkanthk\EsLoader\Core\Elasticsearch\Connector;
-use Neelkanthk\EsLoader\Core\Helper;
 use Exception;
 
 abstract class AbstractLoader
@@ -18,7 +17,6 @@ abstract class AbstractLoader
     public function __construct($config)
     {
         try {
-
             $this->elasticsearch = Connector::connection($config);
             $params = [
                 'index' => $config["index"],
@@ -33,8 +31,37 @@ abstract class AbstractLoader
             }
             $this->config = $config;
         } catch (Exception $ex) {
-            echo $ex->getMessage();
+            throw $ex;
         }
+    }
+
+    /**
+     * Prepare request body for bulk index request
+     * @param array $params
+     * @param array $data
+     * @param array $config
+     * @return array
+     */
+    public function prepareBulkIndexRequest(&$params, $data, $config)
+    {
+        if (!is_null($config["doc_id_key"])) {
+            $params['body'][] = [
+                'index' => [
+                    '_index' => $config["index"],
+                    '_type' => "_doc",
+                    '_id' => $data[$config["doc_id_key"]]
+                ]
+            ];
+        } else {
+            $params['body'][] = [
+                'index' => [
+                    '_index' => $config["index"],
+                    '_type' => "_doc"
+                ]
+            ];
+        }
+        $params['body'][] = $data;
+        return $params;
     }
 
     /**
@@ -42,22 +69,10 @@ abstract class AbstractLoader
      * 
      * @param type $params
      */
-    public function bulkLoad($params)
+    public function bulkIndex($params)
     {
         if (!empty($params["body"])) {
             $this->elasticsearch->bulk($params);
-        }
-    }
-
-    /**
-     * Function to index single document
-     * 
-     * @param type $params
-     */
-    public function singleLoad($params)
-    {
-        if (!empty($params["body"])) {
-            $this->elasticsearch->index($params);
         }
     }
 

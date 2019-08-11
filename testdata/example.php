@@ -7,6 +7,6 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Neelkanthk\EsLoader\Core\EsLoader;
 
-$filePath = __DIR__ . "/data.json";
+$filePath = __DIR__ . "/data.xml";
 $config = include_once __DIR__ . '/config.php';
 EsLoader::load($filePath, $config);

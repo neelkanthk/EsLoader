@@ -4,7 +4,6 @@ namespace Neelkanthk\EsLoader\Loaders;
 
 use Neelkanthk\EsLoader\Core\AbstractLoader;
 use Prewk\XmlStringStreamer;
-use Neelkanthk\EsLoader\Core\Helper;
 use Exception;
 
 class XmlLoader extends AbstractLoader
@@ -24,38 +23,22 @@ class XmlLoader extends AbstractLoader
     public function index()
     {
         try {
+            $batchSize = $this->config['batch_size'];
             $iteration = 1;
+            $params = ['body' => []];
             while ($xmlNode = $this->xml->getNode()) {
-                $xmlNodeArray = (array) simplexml_load_string($xmlNode);
-                if (!is_null($this->config["doc_id_key"])) {
-                    $params['body'][] = [
-                        'index' => [
-                            '_index' => $this->config["index"],
-                            '_type' => '_doc',
-                            '_id' => $xmlNodeArray["id"]
-                        ]
-                    ];
-                } else {
-                    $params['body'][] = [
-                        'index' => [
-                            '_index' => $this->config["index"],
-                            '_type' => '_doc'
-                        ]
-                    ];
-                }
-
-                $params['body'][] = $xmlNodeArray;
-
+                $record = (array) simplexml_load_string($xmlNode);
+                $this->prepareBulkIndexRequest($params, $record, $this->config);
                 // Every 100 elements stop and send the bulk request
-                if ($iteration % 100 == 0) {
-                    $this->bulkLoad($params);
+                if ($iteration % $batchSize == 0) {
+                    $this->bulkIndex($params);
                     $params = ['body' => []];
                 }
                 $iteration++;
             }
             // Send the last batch if it exists
             if (!empty($params['body'])) {
-                $this->bulkLoad($params);
+                $this->bulkIndex($params);
             }
         } catch (Exception $ex) {
             throw $ex;

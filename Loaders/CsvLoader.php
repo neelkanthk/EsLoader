@@ -33,8 +33,8 @@ class CsvLoader extends AbstractLoader
     public function index()
     {
         try {
+            $batchSize = $this->config['batch_size'];
             $totalRecords = $this->csv->count();
-            $batchSize = 100;
             $offset = 0;
             while (true) {
                 $chunk = (new Statement())->offset($offset)->limit($batchSize);
@@ -43,25 +43,9 @@ class CsvLoader extends AbstractLoader
                     $params = ['body' => []];
                     foreach ($records as $record) {
                         $offset++;
-                        if (!is_null($this->config["doc_id_key"])) {
-                            $params['body'][] = [
-                                'index' => [
-                                    '_index' => $this->config["index"],
-                                    '_type' => "_doc",
-                                    '_id' => $record[$this->config["doc_id_key"]]
-                                ]
-                            ];
-                        } else {
-                            $params['body'][] = [
-                                'index' => [
-                                    '_index' => $this->config["index"],
-                                    '_type' => "_doc"
-                                ]
-                            ];
-                        }
-                        $params['body'][] = $record;
+                        $this->prepareBulkIndexRequest($params, $record, $this->config);
                     }
-                    $this->bulkLoad($params);
+                    $this->bulkIndex($params);
                 }
                 if ($offset >= $totalRecords) {
                     break;

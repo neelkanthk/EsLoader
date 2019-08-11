@@ -14,19 +14,19 @@ class EsLoader
      * Select the Loader based on the file extension
      * @param type $filePath
      */
-    public static function load(string $filePath, array $esConfig)
+    public static function load(string $filePath, array $config)
     {
         $extension = Helper::getFileExtension($filePath);
         $loader = NULL;
         switch ($extension) {
             case "json" :
-                $loader = new JsonLoader($filePath, $esConfig);
+                $loader = new JsonLoader($filePath, $config);
                 break;
             case "csv" :
-                $loader = new CsvLoader($filePath, $esConfig);
+                $loader = new CsvLoader($filePath, $config);
                 break;
             case "xml" :
-                $loader = new XmlLoader($filePath, $esConfig);
+                $loader = new XmlLoader($filePath, $config);
                 break;
         }
         if (!is_null($loader)) {
