@@ -3,13 +3,7 @@
     "description": "A lighweight PHP package for indexing data into Elasticsearch index.",
     "type": "package",
     "license": "MIT",
-    "minimum-stability": "dev-master",
-    "authors": [
-        {
-            "name": "Neelkanth Kaushik",
-            "email": "neelkanthkaushik2014@gmail.com"
-        }
-    ],
+    "minimum-stability": "stable",
     "require": {
         "elasticsearch/elasticsearch": "~6.7.0",
         "aws/aws-sdk-php": "^3.65",
