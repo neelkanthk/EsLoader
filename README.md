@@ -1,4 +1,4 @@
-![](https://i.ibb.co/8bdmSg6/esloader-logo.png)
+![](https://i.ibb.co/6wryHGk/esloader-logo.png)
 
 EsLoader is a lighweight PHP package for indexing data from multiple sources into Elasticsearch index.
 
