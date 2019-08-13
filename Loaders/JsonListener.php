@@ -58,7 +58,7 @@ class JsonListener implements ListenerInterface
     }
 
     // Key will always be a string
-    public function key($key): void
+    public function key(string $key): void
     {
         $this->_key = $key;
     }
